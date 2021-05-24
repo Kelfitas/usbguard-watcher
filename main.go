@@ -258,12 +258,13 @@ func handleEvent(event *Event) {
 	name := getDeviceNameFromRule(event.DeviceRule)
 	log.Printf("name: %s\n", name)
 
-	choiceStdin = parseTemplateStringWithDeviceName(choiceStdin, name)
+	newChoiceStdin := parseTemplateStringWithDeviceName(choiceStdin, name)
+	newChoiceArgs := make([]string, len(choiceArgs))
 	for i, choice := range choiceArgs {
-		choiceArgs[i] = parseTemplateStringWithDeviceName(choice, name)
+		newChoiceArgs[i] = parseTemplateStringWithDeviceName(choice, name)
 	}
 
-	stdout, err := shellExec(choiceStdin, choiceBin, choiceArgs...)
+	stdout, err := shellExec(newChoiceStdin, choiceBin, newChoiceArgs...)
 	choice := strings.Replace(stdout, "\n", "", 1)
 	log.Printf("choice: [%s]\n", choice)
 	log.Printf("err: [%#v]\n", err)
