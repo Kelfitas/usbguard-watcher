@@ -224,6 +224,12 @@ func allowDevice(id int) {
 	log.Printf("allow err: %#v\n", err)
 }
 
+func appendRule(rule string) {
+	stdout, err := shellExec("", "usbguard", "append-rule", rule)
+	log.Printf("append rule stdout: %s\n", stdout)
+	log.Printf("append rule err: %#v\n", err)
+}
+
 func notify(msg string) {
 	stdout, err := shellExec("", notifyBin, msg)
 	log.Printf("notify stdout: %s\n", stdout)
@@ -273,6 +279,8 @@ func handleEvent(event *Event) {
 		return
 	}
 
+	rule := strings.Replace(event.DeviceRule, "block", "allow", 1)
+	appendRule(rule)
 	allowDevice(event.ID)
 }
 
